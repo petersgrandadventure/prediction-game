@@ -28,10 +28,10 @@ use super::moves::MoveType;
 impl Move {
     pub fn is_valid(&self, game: Game, game_state: GameState) -> Result<(), String> {
         // <<DEVCAMP-TODO>> Check if a move is valid given the current game and its state
-        is_players_turn(self.author.clone(), &game, &game_state)?;
-
+        
         match self.move_type {
             MoveType::Predict{prediction: _} => {
+                is_players_turn(self.author.clone(), &game, &game_state)?;
                 if game_state.suggestion == 0 {
                     Err("suggestion not set".into())
                 } else {
@@ -39,6 +39,7 @@ impl Move {
                 }
             },
             MoveType::Suggest{suggestion: _} => {
+                is_players_turn(self.author.clone(), &game, &game_state)?;
                 if game_state.suggestion != 0 {
                     Err("suggestion already set".into())
                 } else {
@@ -56,7 +57,7 @@ fn is_players_turn(player: Address, game: &Game, game_state: &GameState) -> Resu
     let moves = &game_state.moves;
     match moves.last() {
         Some(last_move) => {
-            if (last_move.author == player && last_move.move_type != MoveType::Swap{/**/}) {
+            if (last_move.author == player && last_move.move_type != MoveType::Swap{ /**/ }) {
                 Err("IT IS NOT YOUR TURN!!!".into())
             } else {
                 Ok(())
